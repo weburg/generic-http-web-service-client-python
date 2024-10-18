@@ -31,9 +31,9 @@ engine_id1 = http_web_service.create_engines(engine=engine)
 ### Running the example
 
 First, ensure the server is running. Refer to other grouped GHoWSt projects to
-get and run the server. Using pip or your IDE, ensure Python 3 is installed and
-that the dependencies in requirements.txt are installed to your Python
-environment.
+get and run the server. Ensure Python 3 is installed. Then, using pip or your
+IDE, ensure that the dependencies in requirements.txt are installed to your
+Python environment.
 
 If using the CLI, ensure you are in the project directory. Run:
 

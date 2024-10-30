@@ -72,7 +72,7 @@ class HTTPWebServiceInvoker:
         if verb == "get":
             uriStr = base_url + '/' + entity + self._generate_qs(arguments)
 
-            result = requests.get(uriStr)
+            result = requests.get(uriStr, headers={"accept": "application/json"})
 
             if result.status_code == 200:
                 return json.loads(result.text, object_hook=lambda d: SimpleNamespace(**d))
@@ -93,7 +93,7 @@ class HTTPWebServiceInvoker:
                         # Field type is normal / text
                         values[self._underbar_to_camel(property)] = value.__dict__[property]
 
-            result = requests.post(uriStr, files=files, data=values)
+            result = requests.post(uriStr, files=files, data=values, headers={"accept": "application/json"})
 
             if result.status_code == 200 or result.status_code == 201:
                 return json.loads(result.text, object_hook=lambda d: SimpleNamespace(**d))
@@ -114,7 +114,7 @@ class HTTPWebServiceInvoker:
                         # Field type is normal / text
                         values[self._underbar_to_camel(property)] = value.__dict__[property]
 
-            result = requests.put(uriStr, files=files, data=values)
+            result = requests.put(uriStr, files=files, data=values, headers={"accept": "application/json"})
 
             if result.status_code == 200 or result.status_code == 201:
                 return json.loads(result.text, object_hook=lambda d: SimpleNamespace(**d))
@@ -135,7 +135,7 @@ class HTTPWebServiceInvoker:
                         # Field type is normal / text
                         values[self._underbar_to_camel(property)] = value.__dict__[property]
 
-            result = requests.patch(uriStr, files=files, data=values)
+            result = requests.patch(uriStr, files=files, data=values, headers={"accept": "application/json"})
 
             if result.status_code == 200 or result.status_code == 201:
                 return None
@@ -144,7 +144,7 @@ class HTTPWebServiceInvoker:
         elif verb == "delete":
             uriStr = base_url + '/' + entity + self._generate_qs(arguments)
 
-            result = requests.delete(uriStr)
+            result = requests.delete(uriStr, headers={"accept": "application/json"})
 
             if result.status_code == 200:
                 return None
@@ -160,7 +160,7 @@ class HTTPWebServiceInvoker:
             for name, value in arguments.items():
                 values[self._underbar_to_camel(name)] = value
 
-            result = requests.post(uriStr, data=values)
+            result = requests.post(uriStr, data=values, headers={"accept": "application/json"})
 
             if result.status_code == 200 or result.status_code == 201:
                 return None

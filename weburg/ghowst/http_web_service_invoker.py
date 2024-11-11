@@ -42,7 +42,7 @@ class HTTPWebServiceInvoker:
 
     @staticmethod
     def _generate_qs(arguments):
-        return ('?' if len(arguments) > 0 else "") + urllib.parse.urlencode(arguments)
+        return ('?' + urllib.parse.urlencode(arguments) if len(arguments) > 0 else "")
 
     def invoke(self, method_name, arguments, base_url):
         if method_name.startswith("get"):

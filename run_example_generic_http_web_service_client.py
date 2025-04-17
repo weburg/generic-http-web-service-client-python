@@ -82,14 +82,10 @@ http_web_service.restart_engines(id=engine_id2)
 # Repeat, complex objects with different names
 truck1 = types.SimpleNamespace()
 truck1.name = "Ram"
-engine1 = types.SimpleNamespace()
-engine1.name = "Pentastar"
-truck1.engine = engine1
+truck1.engine_id = engine_id1
 truck2 = types.SimpleNamespace()
 truck2.name = "Ford"
-engine2 = types.SimpleNamespace()
-engine2.name = "Ecoboost"
-truck2.engine = engine2
+truck2.engine_id = engine_id2
 truckNameCompareResult = http_web_service.race_trucks(truck1=truck1, truck2=truck2)
 
 if truckNameCompareResult == 0:

@@ -1,8 +1,12 @@
 import _io
 import json
 import urllib.parse
-import requests
+from json import JSONDecodeError
 from types import SimpleNamespace
+
+import requests
+
+from weburg.ghowst.http_web_service_exception import HttpWebServiceException
 
 
 class HTTPWebServiceInvoker:
@@ -44,6 +48,14 @@ class HTTPWebServiceInvoker:
     def _generate_qs(arguments):
         return ('?' + urllib.parse.urlencode(arguments) if len(arguments) > 0 else "")
 
+    @staticmethod
+    def _has_user_properties(value):
+        if hasattr(value, "__dict__"):
+            for property in vars(value):
+                if not property.startswith("__"):
+                    return True
+        return False
+
     def invoke(self, method_name, arguments, base_url):
         if method_name.startswith("get"):
             verb = "get"
@@ -69,100 +81,124 @@ class HTTPWebServiceInvoker:
         print(f"Verb: {verb}")
         print(f"Entity: {entity}")
 
-        if verb == "get":
-            uriStr = base_url + '/' + entity + self._generate_qs(arguments)
+        try:
+            if verb == "get":
+                uri_str = base_url + '/' + entity + self._generate_qs(arguments)
 
-            result = requests.get(uriStr, headers={"accept": "application/json"})
+                result = requests.get(uri_str, headers={"accept": "application/json"})
 
-            if result.status_code == 200:
+                if result.status_code >= 400 or result.status_code < 200:
+                    raise HttpWebServiceException(result.status_code, result.headers["x-error-message"])
+                elif result.status_code >= 300 and result.status_code < 400:
+                    raise HttpWebServiceException(result.status_code, result.headers["location"])
+
                 return json.loads(result.text, object_hook=lambda d: SimpleNamespace(**d))
-            else:
-                raise RuntimeError(f"HTTP {result.status_code} when requesting {uriStr}")
-        elif verb == "create":
-            uriStr = base_url + '/' + entity
+            elif verb == "create":
+                uri_str = base_url + '/' + entity
 
-            files = {}
-            values = {}
+                files = {}
+                values = {}
 
-            for name, value in arguments.items():
-                for property in vars(value):
-                    if type(value.__dict__[property]) == _io.BufferedReader:
-                        # Field type is a File
-                        files[self._underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
-                    else:
-                        # Field type is normal / text
-                        values[self._underbar_to_camel(property)] = value.__dict__[property]
+                for name, value in arguments.items():
+                    for property in vars(value):
+                        if type(value.__dict__[property]) == _io.BufferedReader:
+                            # Field type is a File
+                            files[self._underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
+                        elif not property.startswith("__"):
+                            # Field type is normal / text
+                            values[self._underbar_to_camel(property)] = value.__dict__[property]
 
-            result = requests.post(uriStr, files=files, data=values, headers={"accept": "application/json"})
+                result = requests.post(uri_str, files=files, data=values, headers={"accept": "application/json"})
 
-            if result.status_code == 200 or result.status_code == 201:
+                if result.status_code >= 400 or result.status_code < 200:
+                    raise HttpWebServiceException(result.status_code, result.headers["x-error-message"])
+                elif result.status_code >= 300 and result.status_code < 400:
+                    raise HttpWebServiceException(result.status_code, result.headers["location"])
+
                 return json.loads(result.text, object_hook=lambda d: SimpleNamespace(**d))
-            else:
-                raise RuntimeError(f"HTTP {result.status_code} when requesting {uriStr}")
-        elif verb == "create_or_replace":
-            uriStr = base_url + '/' + entity
+            elif verb == "create_or_replace":
+                uri_str = base_url + '/' + entity
 
-            files = {}
-            values = {}
+                files = {}
+                values = {}
 
-            for name, value in arguments.items():
-                for property in vars(value):
-                    if type(value.__dict__[property]) == _io.BufferedReader:
-                        # Field type is a File
-                        files[self._underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
-                    else:
-                        # Field type is normal / text
-                        values[self._underbar_to_camel(property)] = value.__dict__[property]
+                for name, value in arguments.items():
+                    for property in vars(value):
+                        if type(value.__dict__[property]) == _io.BufferedReader:
+                            # Field type is a File
+                            files[self._underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
+                        elif not property.startswith("__"):
+                            # Field type is normal / text
+                            values[self._underbar_to_camel(property)] = value.__dict__[property]
 
-            result = requests.put(uriStr, files=files, data=values, headers={"accept": "application/json"})
+                result = requests.put(uri_str, files=files, data=values, headers={"accept": "application/json"})
 
-            if result.status_code == 200 or result.status_code == 201:
+                if result.status_code >= 400 or result.status_code < 200:
+                    raise HttpWebServiceException(result.status_code, result.headers["x-error-message"])
+                elif result.status_code >= 300 and result.status_code < 400:
+                    raise HttpWebServiceException(result.status_code, result.headers["location"])
+
                 return json.loads(result.text, object_hook=lambda d: SimpleNamespace(**d))
-            else:
-                raise RuntimeError(f"HTTP {result.status_code} when requesting {uriStr}")
-        elif verb == "update":
-            uriStr = base_url + '/' + entity
+            elif verb == "update":
+                uri_str = base_url + '/' + entity
 
-            files = {}
-            values = {}
+                files = {}
+                values = {}
 
-            for name, value in arguments.items():
-                for property in vars(value):
-                    if type(value.__dict__[property]) == _io.BufferedReader:
-                        # Field type is a File
-                        files[self._underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
-                    else:
-                        # Field type is normal / text
-                        values[self._underbar_to_camel(property)] = value.__dict__[property]
+                for name, value in arguments.items():
+                    for property in vars(value):
+                        if type(value.__dict__[property]) == _io.BufferedReader:
+                            # Field type is a File
+                            files[self._underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
+                        elif not property.startswith("__"):
+                            # Field type is normal / text
+                            values[self._underbar_to_camel(property)] = value.__dict__[property]
 
-            result = requests.patch(uriStr, files=files, data=values, headers={"accept": "application/json"})
+                result = requests.patch(uri_str, files=files, data=values, headers={"accept": "application/json"})
 
-            if result.status_code == 200 or result.status_code == 201:
+                if result.status_code >= 400 or result.status_code < 200:
+                    raise HttpWebServiceException(result.status_code, result.headers["x-error-message"])
+                elif result.status_code >= 300 and result.status_code < 400:
+                    raise HttpWebServiceException(result.status_code, result.headers["location"])
+
+                return None
+            elif verb == "delete":
+                uri_str = base_url + '/' + entity + self._generate_qs(arguments)
+
+                result = requests.delete(uri_str, headers={"accept": "application/json"})
+
+                if result.status_code >= 400 or result.status_code < 200:
+                    raise HttpWebServiceException(result.status_code, result.headers["x-error-message"])
+                elif result.status_code >= 300 and result.status_code < 400:
+                    raise HttpWebServiceException(result.status_code, result.headers["location"])
+
                 return None
             else:
-                raise RuntimeError(f"HTTP {result.status_code} when requesting {uriStr}")
-        elif verb == "delete":
-            uriStr = base_url + '/' + entity + self._generate_qs(arguments)
+                # POST to a custom verb resource
 
-            result = requests.delete(uriStr, headers={"accept": "application/json"})
+                uri_str = base_url + '/' + entity + '/' + verb
 
-            if result.status_code == 200:
-                return None
-            else:
-                raise RuntimeError(f"HTTP {result.status_code} when requesting {uriStr}")
-        else:
-            # POST to a custom verb resource
+                values = {}
 
-            uriStr = base_url + '/' + entity + '/' + verb
+                for name, value in arguments.items():
+                    if not self._has_user_properties(value):
+                        values[self._underbar_to_camel(name)] = value
+                    else:
+                        for property in vars(value):
+                            values[self._underbar_to_camel(name) + '.' + self._underbar_to_camel(property)] = value.__dict__[property]
 
-            values = {}
+                result = requests.post(uri_str, data=values, headers={"accept": "application/json"})
 
-            for name, value in arguments.items():
-                values[self._underbar_to_camel(name)] = value
+                if result.status_code >= 400 or result.status_code < 200:
+                    raise HttpWebServiceException(result.status_code, result.headers["x-error-message"])
+                elif result.status_code >= 300 and result.status_code < 400:
+                    raise HttpWebServiceException(result.status_code, result.headers["location"])
 
-            result = requests.post(uriStr, data=values, headers={"accept": "application/json"})
-
-            if result.status_code == 200 or result.status_code == 201:
-                return None
-            else:
-                raise RuntimeError(f"HTTP {result.status_code} when requesting {uriStr}")
+                try:
+                    return json.loads(result.text, object_hook=lambda d: SimpleNamespace(**d))
+                except JSONDecodeError:
+                    return None
+        except HttpWebServiceException as e:
+            raise e
+        except Exception as e:
+            raise HttpWebServiceException(500, "There was a problem processing the web service request: " + str(e))

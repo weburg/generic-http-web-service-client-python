@@ -1,6 +1,7 @@
+import inspect
 import types
 from weburg.ghowst.generic_http_web_service_client import *
-
+from weburg.ghowst.http_web_service_exception import HttpWebServiceException
 
 http_web_service = GenericHTTPWebServiceClient("http://localhost:8081/generichttpws")
 
@@ -77,3 +78,33 @@ http_web_service.delete_engines(id=engine_id4)
 
 # Custom verb
 http_web_service.restart_engines(id=engine_id2)
+
+# Repeat, complex objects with different names
+truck1 = types.SimpleNamespace()
+truck1.name = "Ram"
+engine1 = types.SimpleNamespace()
+engine1.name = "Pentastar"
+truck1.engine = engine1
+truck2 = types.SimpleNamespace()
+truck2.name = "Ford"
+engine2 = types.SimpleNamespace()
+engine2.name = "Ecoboost"
+truck2.engine = engine2
+truckNameCompareResult = http_web_service.race_trucks(truck1=truck1, truck2=truck2)
+
+if truckNameCompareResult == 0:
+    raise RuntimeError("Did not expect both trucks to have the same name.")
+
+# Induce a not found error and catch it
+try:
+    engine = http_web_service.get_engines(id=-2)
+    print("Engine returned: " + engine.name)
+except HttpWebServiceException as e:
+    print("Status: " + str(e.http_status) + " Message: " + e.message)
+
+# Induce a service error and catch it
+try:
+    http_web_service_wrong = GenericHTTPWebServiceClient("http://nohost:8081/generichttpws")
+    http_web_service_wrong.get_engines(id=-2)
+except HttpWebServiceException as e:
+    print("Status: " + str(e.http_status) + " Message: " + e.message)

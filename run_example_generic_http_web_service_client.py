@@ -1,4 +1,3 @@
-import inspect
 import types
 from weburg.ghowst.generic_http_web_service_client import *
 from weburg.ghowst.http_web_service_exception import HttpWebServiceException

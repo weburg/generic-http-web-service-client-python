@@ -201,4 +201,4 @@ class HTTPWebServiceInvoker:
         except HttpWebServiceException as e:
             raise e
         except Exception as e:
-            raise HttpWebServiceException(500, "There was a problem processing the web service request: " + str(e))
+            raise HttpWebServiceException(0, "There was a problem processing the web service request: " + str(e))

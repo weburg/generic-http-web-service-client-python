@@ -103,10 +103,10 @@ class HTTPWebServiceInvoker:
                     for property in vars(value):
                         if type(value.__dict__[property]) == _io.BufferedReader:
                             # Field type is a File
-                            files[self._underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
+                            files[self._underbar_to_camel(name) + '.' + self._underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
                         elif not property.startswith("__"):
                             # Field type is normal / text
-                            values[self._underbar_to_camel(property)] = value.__dict__[property]
+                            values[self._underbar_to_camel(name) + '.' + self._underbar_to_camel(property)] = value.__dict__[property]
 
                 result = requests.post(uri_str, files=files, data=values, headers={"accept": "application/json"})
 
@@ -126,10 +126,10 @@ class HTTPWebServiceInvoker:
                     for property in vars(value):
                         if type(value.__dict__[property]) == _io.BufferedReader:
                             # Field type is a File
-                            files[self._underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
+                            files[self._underbar_to_camel(name) + '.' + self._underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
                         elif not property.startswith("__"):
                             # Field type is normal / text
-                            values[self._underbar_to_camel(property)] = value.__dict__[property]
+                            values[self._underbar_to_camel(name) + '.' + self._underbar_to_camel(property)] = value.__dict__[property]
 
                 result = requests.put(uri_str, files=files, data=values, headers={"accept": "application/json"})
 
@@ -149,10 +149,10 @@ class HTTPWebServiceInvoker:
                     for property in vars(value):
                         if type(value.__dict__[property]) == _io.BufferedReader:
                             # Field type is a File
-                            files[self._underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
+                            files[self._underbar_to_camel(name) + '.' + self._underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
                         elif not property.startswith("__"):
                             # Field type is normal / text
-                            values[self._underbar_to_camel(property)] = value.__dict__[property]
+                            values[self._underbar_to_camel(name) + '.' + self._underbar_to_camel(property)] = value.__dict__[property]
 
                 result = requests.patch(uri_str, files=files, data=values, headers={"accept": "application/json"})
 

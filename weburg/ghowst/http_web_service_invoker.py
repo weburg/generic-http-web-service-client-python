@@ -11,11 +11,11 @@ from weburg.ghowst.http_web_service_exception import HttpWebServiceException
 
 class HTTPWebServiceInvoker:
     @staticmethod
-    def _get_entity_name(name, verb):
+    def __get_entity_name(name, verb):
         return name[len(verb) + 1 : len(name)].lower()
 
     @staticmethod
-    def _underbar_to_camel(string):
+    def __underbar_to_camel(string):
         new_string = ''
 
         upper_next = False
@@ -33,7 +33,7 @@ class HTTPWebServiceInvoker:
         return new_string
 
     @staticmethod
-    def _camel_to_underbar(string):
+    def __camel_to_underbar(string):
         new_string = ''
 
         for char in string:
@@ -45,11 +45,11 @@ class HTTPWebServiceInvoker:
         return new_string
 
     @staticmethod
-    def _generate_qs(arguments):
+    def __generate_qs(arguments):
         return ('?' + urllib.parse.urlencode(arguments) if len(arguments) > 0 else "")
 
     @staticmethod
-    def _has_user_properties(value):
+    def __has_user_properties(value):
         if hasattr(value, "__dict__"):
             for property in vars(value):
                 if not property.startswith("__"):
@@ -59,31 +59,31 @@ class HTTPWebServiceInvoker:
     def invoke(self, method_name, arguments, base_url):
         if method_name.startswith("get"):
             verb = "get"
-            entity = self._get_entity_name(method_name, verb)
+            entity = self.__get_entity_name(method_name, verb)
         elif method_name.startswith("create_or_replace"):
             verb = "create_or_replace"
-            entity = self._get_entity_name(method_name, verb)
+            entity = self.__get_entity_name(method_name, verb)
         elif method_name.startswith("create"):
             verb = "create"
-            entity = self._get_entity_name(method_name, verb)
+            entity = self.__get_entity_name(method_name, verb)
         elif method_name.startswith("update"):
             verb = "update"
-            entity = self._get_entity_name(method_name, verb)
+            entity = self.__get_entity_name(method_name, verb)
         elif method_name.startswith("delete"):
             verb = "delete"
-            entity = self._get_entity_name(method_name, verb)
+            entity = self.__get_entity_name(method_name, verb)
         else:
             parts = method_name.split('_')
 
             verb = parts[0].lower()
-            entity = self._get_entity_name(method_name, verb)
+            entity = self.__get_entity_name(method_name, verb)
 
         print(f"Verb: {verb}")
         print(f"Entity: {entity}")
 
         try:
             if verb == "get":
-                uri_str = base_url + '/' + entity + self._generate_qs(arguments)
+                uri_str = base_url + '/' + entity + self.__generate_qs(arguments)
 
                 result = requests.get(uri_str, headers={"accept": "application/json"})
 
@@ -103,10 +103,10 @@ class HTTPWebServiceInvoker:
                     for property in vars(value):
                         if type(value.__dict__[property]) == _io.BufferedReader:
                             # Field type is a File
-                            files[self._underbar_to_camel(name) + '.' + self._underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
+                            files[self.__underbar_to_camel(name) + '.' + self.__underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
                         elif not property.startswith("__"):
                             # Field type is normal / text
-                            values[self._underbar_to_camel(name) + '.' + self._underbar_to_camel(property)] = value.__dict__[property]
+                            values[self.__underbar_to_camel(name) + '.' + self.__underbar_to_camel(property)] = value.__dict__[property]
 
                 result = requests.post(uri_str, files=files, data=values, headers={"accept": "application/json"})
 
@@ -126,10 +126,10 @@ class HTTPWebServiceInvoker:
                     for property in vars(value):
                         if type(value.__dict__[property]) == _io.BufferedReader:
                             # Field type is a File
-                            files[self._underbar_to_camel(name) + '.' + self._underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
+                            files[self.__underbar_to_camel(name) + '.' + self.__underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
                         elif not property.startswith("__"):
                             # Field type is normal / text
-                            values[self._underbar_to_camel(name) + '.' + self._underbar_to_camel(property)] = value.__dict__[property]
+                            values[self.__underbar_to_camel(name) + '.' + self.__underbar_to_camel(property)] = value.__dict__[property]
 
                 result = requests.put(uri_str, files=files, data=values, headers={"accept": "application/json"})
 
@@ -149,10 +149,10 @@ class HTTPWebServiceInvoker:
                     for property in vars(value):
                         if type(value.__dict__[property]) == _io.BufferedReader:
                             # Field type is a File
-                            files[self._underbar_to_camel(name) + '.' + self._underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
+                            files[self.__underbar_to_camel(name) + '.' + self.__underbar_to_camel(property)] = (value.__dict__[property].name, value.__dict__[property])
                         elif not property.startswith("__"):
                             # Field type is normal / text
-                            values[self._underbar_to_camel(name) + '.' + self._underbar_to_camel(property)] = value.__dict__[property]
+                            values[self.__underbar_to_camel(name) + '.' + self.__underbar_to_camel(property)] = value.__dict__[property]
 
                 result = requests.patch(uri_str, files=files, data=values, headers={"accept": "application/json"})
 
@@ -163,7 +163,7 @@ class HTTPWebServiceInvoker:
 
                 return None
             elif verb == "delete":
-                uri_str = base_url + '/' + entity + self._generate_qs(arguments)
+                uri_str = base_url + '/' + entity + self.__generate_qs(arguments)
 
                 result = requests.delete(uri_str, headers={"accept": "application/json"})
 
@@ -181,11 +181,11 @@ class HTTPWebServiceInvoker:
                 values = {}
 
                 for name, value in arguments.items():
-                    if not self._has_user_properties(value):
-                        values[self._underbar_to_camel(name)] = value
+                    if not self.__has_user_properties(value):
+                        values[self.__underbar_to_camel(name)] = value
                     else:
                         for property in vars(value):
-                            values[self._underbar_to_camel(name) + '.' + self._underbar_to_camel(property)] = value.__dict__[property]
+                            values[self.__underbar_to_camel(name) + '.' + self.__underbar_to_camel(property)] = value.__dict__[property]
 
                 result = requests.post(uri_str, data=values, headers={"accept": "application/json"})
 

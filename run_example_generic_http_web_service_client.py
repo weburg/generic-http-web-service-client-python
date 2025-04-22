@@ -1,6 +1,7 @@
 import types
+
 from weburg.ghowst.generic_http_web_service_client import *
-from weburg.ghowst.http_web_service_exception import HttpWebServiceException
+
 
 http_web_service = GenericHTTPWebServiceClient("http://localhost:8081/generichttpws")
 

@@ -86,10 +86,9 @@ truck1.engine_id = engine_id1
 truck2 = types.SimpleNamespace()
 truck2.name = "Ford"
 truck2.engine_id = engine_id2
-truckNameCompareResult = http_web_service.race_trucks(truck1=truck1, truck2=truck2)
+truckResult = http_web_service.race_trucks(truck1=truck1, truck2=truck2)
 
-if truckNameCompareResult == 0:
-    raise RuntimeError("Did not expect both trucks to have the same name.")
+print("Race result: " + truckResult)
 
 # Induce a not found error and catch it
 try:

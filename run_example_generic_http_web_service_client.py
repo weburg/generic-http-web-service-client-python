@@ -5,13 +5,13 @@ from weburg.ghowst.generic_http_web_service_client import *
 
 http_web_service = GenericHTTPWebServiceClient("http://localhost:8081/generichttpws")
 
-### Photo ###
+### Image ###
 
 # Create
-photo = types.SimpleNamespace()
-photo.caption = "Some Python K"
-photo.photo_file = open("python.jpg", 'rb')
-http_web_service.create_photos(photo=photo)
+image = types.SimpleNamespace()
+image.caption = "Some Python K"
+image.image_file = open("python.jpg", 'rb')
+http_web_service.create_images(image=image)
 
 ### Engine ###
 

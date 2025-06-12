@@ -46,3 +46,13 @@ If using an IDE, you should only need to run the below file:
 
 The example runs several calls to create, update, replace, read, delete, and do
 a custom action on resources.
+
+### Running the tests
+
+To run unit tests only:
+
+`python -m unittest discover tests/unit`
+
+To run unit and integration tests:
+
+`python -m unittest discover tests`

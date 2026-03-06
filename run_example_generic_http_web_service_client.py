@@ -53,7 +53,6 @@ engine.throttle_setting = 49
 engine_id3 = http_web_service.create_engines(engine=engine)
 
 # Update
-engine = types.SimpleNamespace()
 engine.id = engine_id3
 engine.name = "PythonEngine3Updated"
 http_web_service.update_engines(engine=engine)

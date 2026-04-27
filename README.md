@@ -1,5 +1,7 @@
 # Generic HTTP Web Service Client in Python (GHoWSt)
 
+![Logo](http://www.weburg.com/ghowst/images/ghowstlogo.png)
+
 ## A client written to talk to the Generic HTTP Web Service Server
 
 ### Design goals
@@ -29,12 +31,15 @@ engine.throttle_setting = 49
 engine_id1 = http_web_service.create_engines(engine=engine)
 ```
 
+### Setup
+
+Ensure Python 3 is installed. Then, using pip or your IDE, ensure that the
+dependencies in requirements.txt are installed to your Python environment.
+
 ### Running the example
 
 First, ensure the server is running. Refer to other grouped GHoWSt projects to
-get and run the server. Ensure Python 3 is installed. Then, using pip or your
-IDE, ensure that the dependencies in requirements.txt are installed to your
-Python environment.
+get and run the server.
 
 If using the CLI, ensure you are in the project directory. Run:
 

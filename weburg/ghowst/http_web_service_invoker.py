@@ -47,7 +47,18 @@ class HTTPWebServiceInvoker:
 
     @staticmethod
     def __generate_qs(arguments):
-        return ('?' + urllib.parse.urlencode(arguments) if len(arguments) > 0 else "")
+        qs = ''
+
+        if (len(arguments) > 0):
+            qs += '?'
+
+            arguments_renamed = {}
+            for name, value in arguments.items():
+                arguments_renamed[HTTPWebServiceInvoker.__underbar_to_camel(name)] = value
+
+            qs += urllib.parse.urlencode(arguments_renamed)
+
+        return qs
 
     @staticmethod
     def __has_user_properties(value):

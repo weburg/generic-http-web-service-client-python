@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/GHoWSt Client.iml" filepath="$PROJECT_DIR$/.idea/GHoWSt Client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ghowst-client.iml" filepath="$PROJECT_DIR$/.idea/ghowst-client.iml" />
     </modules>
   </component>
 </project>
